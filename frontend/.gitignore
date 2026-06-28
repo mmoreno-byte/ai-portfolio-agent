@@ -1,0 +1,25 @@
+# Node
+frontend/node_modules/
+frontend/dist/
+
+# Python
+backend/__pycache__/
+backend/**/__pycache__/
+backend/*.pyc
+backend/.venv/
+
+# Docker / datos generados
+backend/uploads/
+backend/chroma_db/
+
+# Entornos y secretos
+.env
+*.env.local
+
+# Sistema
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/

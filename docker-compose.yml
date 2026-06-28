@@ -1,0 +1,44 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: ai_agent_db
+    restart: always
+    environment:
+      POSTGRES_USER: aiuser
+      POSTGRES_PASSWORD: aipassword
+      POSTGRES_DB: ai_agent_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  backend:
+    build: ./backend
+    container_name: ai_agent_backend
+    restart: always
+    ports:
+      - "8000:8000"
+    environment:
+      DATABASE_URL: postgresql://aiuser:aipassword@postgres:5432/ai_agent_db
+      OLLAMA_BASE_URL: http://host.docker.internal:11434
+    depends_on:
+      - postgres
+    volumes:
+      - ./backend:/app
+      - chroma_data:/app/chroma_db
+
+  frontend:
+    build: ./frontend
+    container_name: ai_agent_frontend
+    restart: always
+    ports:
+      - "5173:5173"
+    depends_on:
+      - backend
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+
+volumes:
+  postgres_data:
+  chroma_data:
