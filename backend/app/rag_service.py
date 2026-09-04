@@ -2,7 +2,7 @@ import os
 from langchain_community.document_loaders import PyPDFLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_community.vectorstores import Chroma
-from langchain_community.embeddings import FastEmbedEmbeddings
+from langchain_google_genai import GoogleGenerativeAIEmbeddings
 from langchain_groq import ChatGroq
 from langchain.chains import RetrievalQA
 from langchain.prompts import PromptTemplate
@@ -10,9 +10,10 @@ from langdetect import detect
 
 CHROMA_DIR = "/app/chroma_db"
 
-# Embeddings ligeros (ONNX, corren en CPU) y modelo de chat vía Groq (gratis, en la nube):
-# Ollama necesitaba varios GB de RAM para un LLM local, algo que no cabe en un free tier.
-embeddings = FastEmbedEmbeddings(model_name="sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2")
+# Embeddings vía API de Google y modelo de chat vía Groq (ambos gratis, en la nube):
+# Ollama necesitaba varios GB de RAM para un LLM local, y un modelo de embeddings
+# cargado en el propio contenedor tampoco cabe en los 512MB del free tier de Render.
+embeddings = GoogleGenerativeAIEmbeddings(model="models/text-embedding-004", google_api_key=os.getenv("GOOGLE_API_KEY"))
 llm = ChatGroq(model="llama-3.3-70b-versatile", api_key=os.getenv("GROQ_API_KEY"))
 
 LANGUAGE_NAMES = {
