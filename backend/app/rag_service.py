@@ -2,16 +2,18 @@ import os
 from langchain_community.document_loaders import PyPDFLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_community.vectorstores import Chroma
-from langchain_ollama import OllamaEmbeddings, OllamaLLM
+from langchain_community.embeddings import FastEmbedEmbeddings
+from langchain_groq import ChatGroq
 from langchain.chains import RetrievalQA
 from langchain.prompts import PromptTemplate
 from langdetect import detect
 
 CHROMA_DIR = "/app/chroma_db"
-OLLAMA_BASE_URL = os.getenv("OLLAMA_BASE_URL", "http://host.docker.internal:11434")
 
-embeddings = OllamaEmbeddings(model="nomic-embed-text", base_url=OLLAMA_BASE_URL)
-llm = OllamaLLM(model="llama3.2", base_url=OLLAMA_BASE_URL)
+# Embeddings ligeros (ONNX, corren en CPU) y modelo de chat vía Groq (gratis, en la nube):
+# Ollama necesitaba varios GB de RAM para un LLM local, algo que no cabe en un free tier.
+embeddings = FastEmbedEmbeddings(model_name="sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2")
+llm = ChatGroq(model="llama-3.3-70b-versatile", api_key=os.getenv("GROQ_API_KEY"))
 
 LANGUAGE_NAMES = {
     "es": "Spanish",
@@ -85,7 +87,7 @@ def query_document(question: str, collection_name: str):
     )
 
     result = llm.invoke(final_prompt)
-    return result
+    return result.content
 
 def delete_collection(collection_name: str):
     """Borra una colección completa de ChromaDB"""
