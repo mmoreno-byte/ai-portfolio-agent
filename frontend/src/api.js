@@ -15,8 +15,7 @@ export const uploadDocument = async (file) => {
 export const askQuestion = async (documentId, question) => {
     const response = await axios.post(
         `${API_URL}/documents/${documentId}/ask`,
-        null,
-        { params: { question } }
+        { question }
     );
     return response.data;
 };

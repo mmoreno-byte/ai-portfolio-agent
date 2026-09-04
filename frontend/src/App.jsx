@@ -43,7 +43,7 @@ function App() {
         <h1>Pregúntale a tus documentos</h1>
         <p className="app-subtitle">
           Sube un PDF y conversa con él en el idioma que prefieras.
-          Todo se procesa con un modelo local, sin enviar nada a servicios externos.
+          RAG con LangChain, Chroma y Groq, corriendo en la nube.
         </p>
       </header>
 

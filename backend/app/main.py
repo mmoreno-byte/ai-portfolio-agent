@@ -2,6 +2,7 @@ import os
 import shutil
 from fastapi import FastAPI, UploadFile, File, Depends, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
 from sqlalchemy.orm import Session
 
 from app.database import engine, Base, get_db
@@ -58,8 +59,13 @@ def upload_document(file: UploadFile = File(...), db: Session = Depends(get_db))
     }
 
 
+class AskRequest(BaseModel):
+    question: str
+
+
 @app.post("/documents/{document_id}/ask")
-def ask_question(document_id: int, question: str, db: Session = Depends(get_db)):
+def ask_question(document_id: int, body: AskRequest, db: Session = Depends(get_db)):
+    question = body.question
     document = db.query(models.Document).filter(models.Document.id == document_id).first()
     if not document:
         raise HTTPException(status_code=404, detail="Documento no encontrado")
