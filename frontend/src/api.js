@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:8000';
+const API_URL = import.meta.env.DEV ? 'http://localhost:8000' : 'https://ai-portfolio-agent-7baa.onrender.com';
 
 export const uploadDocument = async (file) => {
     const formData = new FormData();
