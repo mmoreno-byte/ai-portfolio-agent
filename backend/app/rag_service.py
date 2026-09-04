@@ -14,7 +14,7 @@ CHROMA_DIR = "/app/chroma_db"
 # Ollama necesitaba varios GB de RAM para un LLM local, y un modelo de embeddings
 # cargado en el propio contenedor tampoco cabe en los 512MB del free tier de Render.
 embeddings = CohereEmbeddings(model="embed-multilingual-v3.0", cohere_api_key=os.getenv("COHERE_API_KEY"))
-llm = ChatGroq(model="llama-3.3-70b-versatile", api_key=os.getenv("GROQ_API_KEY"))
+llm = ChatGroq(model="openai/gpt-oss-120b", api_key=os.getenv("GROQ_API_KEY"))
 
 LANGUAGE_NAMES = {
     "es": "Spanish",
